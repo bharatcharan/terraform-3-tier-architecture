@@ -7,48 +7,44 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
 provider "aws" {
-  region = "us-east-1"
+  region = "ap-south-1"
 }
-
-# Create a VPC
 resource "aws_vpc" "my-vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "11.0.0.0/16"
   tags = {
-    Name = "swiggy-VPC"
+    Name = "project_vpc"
   }
 }
 
-# Create Web Public Subnet
-resource "aws_subnet" "web-subnet-1" {
-  vpc_id                  = aws_vpc.my-vpc.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
-  map_public_ip_on_launch = true
+#subnet creation for webservers
+
+resource "aws_subnet" "web-sub-1" {
+  vpc_id               = "aws_vpc.my-vpc.id"
+  cidr_block           = "11.0.1.0/24"
+  availability_zone    = "ap-south-1a"
+  map_public_ip_launch = true
 
   tags = {
-    Name = "Web-1a"
+    Name = "web-1a"
   }
 }
 
-resource "aws_subnet" "web-subnet-2" {
-  vpc_id                  = aws_vpc.my-vpc.id
-  cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"
-  map_public_ip_on_launch = true
- tags = {
-    Name = "Web-2a"
+resource "aws_subnet" "web-sub-2" {
+  vpc_id               = "aws_vpc.my-vpc.id"
+  cidr_block           = "11.0.2.0/24"
+  availability         = "ap-south-1b"
+  map_public_ip_launch = true
+  tags = {
+    Name = "web-1b"
   }
 }
-
-
 
 # Create Application Private Subnet
 resource "aws_subnet" "application-subnet-1" {
   vpc_id                  = aws_vpc.my-vpc.id
-  cidr_block              = "10.0.11.0/24"
-  availability_zone       = "us-east-1a"
+  cidr_block              = "11.0.11.0/24"
+  availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = false
 
   tags = {
@@ -58,8 +54,8 @@ resource "aws_subnet" "application-subnet-1" {
 
 resource "aws_subnet" "application-subnet-2" {
   vpc_id                  = aws_vpc.my-vpc.id
-  cidr_block              = "10.0.12.0/24"
-  availability_zone       = "us-east-1b"
+  cidr_block              = "11.0.12.0/24"
+  availability_zone       = "ap-south-1b"
   map_public_ip_on_launch = false
 
   tags = {
@@ -70,8 +66,8 @@ resource "aws_subnet" "application-subnet-2" {
 # Create Database Private Subnet
 resource "aws_subnet" "database-subnet-1" {
   vpc_id            = aws_vpc.my-vpc.id
-  cidr_block        = "10.0.21.0/24"
-  availability_zone = "us-east-1a"
+  cidr_block        = "11.0.21.0/24"
+  availability_zone = "ap-south-1a"
 
   tags = {
     Name = "Database-1a"
@@ -80,8 +76,8 @@ resource "aws_subnet" "database-subnet-1" {
 
 resource "aws_subnet" "database-subnet-2" {
   vpc_id            = aws_vpc.my-vpc.id
-  cidr_block        = "10.0.22.0/24"
-  availability_zone = "us-east-1b"
+  cidr_block        = "11.0.22.0/24"
+  availability_zone = "ap-south-1b"
 
   tags = {
     Name = "Database-2b"
@@ -90,20 +86,19 @@ resource "aws_subnet" "database-subnet-2" {
 
 resource "aws_subnet" "database-subnet" {
   vpc_id            = aws_vpc.my-vpc.id
-  cidr_block        = "10.0.3.0/24"
-  availability_zone = "us-east-1a"
+  cidr_block        = "11.0.3.0/24"
+  availability_zone = "ap-south-1a"
 
   tags = {
     Name = "Database"
   }
 }
-
 # Create Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.my-vpc.id
 
   tags = {
-    Name = "SWIGGY-IGW"
+    Name = "MY-IGW"
   }
 }
 
@@ -135,13 +130,13 @@ resource "aws_route_table_association" "b" {
 
 #Create EC2 Instance
 resource "aws_instance" "webserver1" {
-  ami                    = "ami-0d5eff06f840b45e9"
+  ami                    = "ami-060f2cb962e997969"
   instance_type          = "t2.micro"
-  availability_zone      = "us-east-1a"
-  key_name               = "nvj"
+  availability_zone      = "ap-south-1a"
+  key_name               = "ubuntu"
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-1.id
-  user_data              = "${file("apache.sh")}"
+  user_data              = file("apache.sh")
 
   tags = {
     Name = "Web Server"
@@ -149,13 +144,13 @@ resource "aws_instance" "webserver1" {
 }
 
 resource "aws_instance" "webserver2" {
-  ami                    = "ami-0d5eff06f840b45e9"
+  ami                    = "ami-060f2cb962e997969"
   instance_type          = "t2.micro"
-  availability_zone      = "us-east-1b"
-  key_name               = "nvj"
+  availability_zone      = "ap-south-1b"
+  key_name               = "ubuntu"
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-2.id
-  user_data              = "${file("apache.sh")}"
+  user_data              = file("apache.sh")
 
   tags = {
     Name = "Web Server"
@@ -164,10 +159,10 @@ resource "aws_instance" "webserver2" {
 
 #Create EC2 Instance
 resource "aws_instance" "appserver1" {
-  ami                    = "ami-0d5eff06f840b45e9"
+  ami                    = "ami-060f2cb962e997969"
   instance_type          = "t2.micro"
-  availability_zone      = "us-east-1a"
-  key_name               = "nvj"
+  availability_zone      = "ap-south-1a"
+  key_name               = "ubuntu"
   vpc_security_group_ids = [aws_security_group.appserver-sg.id]
   subnet_id              = aws_subnet.application-subnet-1.id
   tags = {
@@ -176,10 +171,10 @@ resource "aws_instance" "appserver1" {
 }
 
 resource "aws_instance" "appserver2" {
-  ami                    = "ami-0d5eff06f840b45e9"
+  ami                    = "ami-060f2cb962e997969"
   instance_type          = "t2.micro"
-  availability_zone      = "us-east-1b"
-  key_name               = "nvj"
+  availability_zone      = "ap-south-1b"
+  key_name               = "ubuntu"
   vpc_security_group_ids = [aws_security_group.appserver-sg.id]
   subnet_id              = aws_subnet.application-subnet-2.id
 
@@ -192,7 +187,7 @@ resource "aws_db_instance" "default" {
   allocated_storage      = 10
   db_subnet_group_name   = aws_db_subnet_group.default.id
   engine                 = "mysql"
-  engine_version         = "8.0.28"
+  engine_version         = "8.0.34"
   instance_class         = "db.t2.micro"
   multi_az               = false
   db_name                = "mydb"
@@ -210,7 +205,6 @@ resource "aws_db_subnet_group" "default" {
     Name = "My DB subnet group"
   }
 }
-
 
 # Create Web Security Group
 resource "aws_security_group" "webserver-sg" {
@@ -240,7 +234,7 @@ resource "aws_security_group" "webserver-sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
- tags = {
+  tags = {
     Name = "Web-SG"
   }
 }
@@ -252,18 +246,18 @@ resource "aws_security_group" "appserver-sg" {
   vpc_id      = aws_vpc.my-vpc.id
 
   ingress {
-    description     = "Allow traffic from web layer"
-    from_port       = 8080
-    to_port         = 8080
-    protocol        = "tcp"
+    description = "Allow traffic from web layer"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
- ingress {
-    description     = "Allow traffic from web layer"
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
+  ingress {
+    description = "Allow traffic from web layer"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -286,10 +280,10 @@ resource "aws_security_group" "database-sg" {
   vpc_id      = aws_vpc.my-vpc.id
 
   ingress {
-    description     = "Allow traffic from application layer"
-    from_port       = 3306
-    to_port         = 3306
-    protocol        = "tcp"
+    description = "Allow traffic from application layer"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -351,9 +345,6 @@ resource "aws_lb_listener" "external-elb" {
   }
 }
 
-
-
-
 output "lb_dns_name" {
   description = "The DNS name of the load balancer"
   value       = aws_lb.external-elb.dns_name
@@ -361,25 +352,25 @@ output "lb_dns_name" {
 
 
 resource "aws_s3_bucket" "my_bucket" {
-  bucket = "batch4pmdevopswithaws202477"  
+  bucket = "batch4pmdevopswithaws2024771"
 
-  acl    = "private"  
+  acl = "private"
   versioning {
-    enabled = true 
+    enabled = true
   }
 }
 
 resource "aws_iam_user" "one" {
-for_each = var.iam_users
-name = each.value
+  for_each = var.iam_users
+  name     = each.value
 }
 
 variable "iam_users" {
-description = ""
-type = set(string)
-default = ["user1", "user2", "user3", "user4"]
+  description = ""
+  type        = set(string)
+  default     = ["user1", "user2", "user3", "user4"]
 }
 
 resource "aws_iam_group" "two" {
-name = "devopswithawsbyraham"
+  name = "devopswithawsbyraham"
 }
