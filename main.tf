@@ -19,7 +19,7 @@ resource "aws_vpc" "my-vpc" {
 
 #subnet creation for webservers
 
-resource "aws_subnet" "web-sub-1" {
+resource "aws_subnet" "web-subnet-1" {
   vpc_id               = "aws_vpc.my-vpc.id"
   cidr_block           = "11.0.1.0/24"
   availability_zone    = "ap-south-1a"
@@ -28,10 +28,10 @@ resource "aws_subnet" "web-sub-1" {
   }
 }
 
-resource "aws_subnet" "web-sub-2" {
+resource "aws_subnet" "web-subnet-2" {
   vpc_id               = "aws_vpc.my-vpc.id"
   cidr_block           = "11.0.2.0/24"
-  availability         = "ap-south-1b"
+  availability_zone    = "ap-south-1b"
   tags = {
     Name = "web-1b"
   }
