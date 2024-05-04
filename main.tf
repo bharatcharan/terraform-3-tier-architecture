@@ -34,7 +34,7 @@ resource "aws_subnet" "web-sub-2" {
   vpc_id               = "aws_vpc.my-vpc.id"
   cidr_block           = "11.0.2.0/24"
   availability         = "ap-south-1b"
-  map_public_ip_launch = true
+  associate_public_ip_address = true 
   tags = {
     Name = "web-1b"
   }
@@ -45,7 +45,7 @@ resource "aws_subnet" "application-subnet-1" {
   vpc_id                  = aws_vpc.my-vpc.id
   cidr_block              = "11.0.11.0/24"
   availability_zone       = "ap-south-1a"
-  map_public_ip_on_launch = false
+  associate_public_ip_address = false
 
   tags = {
     Name = "Application-1a"
@@ -56,7 +56,7 @@ resource "aws_subnet" "application-subnet-2" {
   vpc_id                  = aws_vpc.my-vpc.id
   cidr_block              = "11.0.12.0/24"
   availability_zone       = "ap-south-1b"
-  map_public_ip_on_launch = false
+ associate_public_ip_address = false
 
   tags = {
     Name = "Application-2b"
