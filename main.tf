@@ -23,8 +23,6 @@ resource "aws_subnet" "web-sub-1" {
   vpc_id               = "aws_vpc.my-vpc.id"
   cidr_block           = "11.0.1.0/24"
   availability_zone    = "ap-south-1a"
-  map_public_ip_launch = true
-
   tags = {
     Name = "web-1a"
   }
@@ -34,7 +32,6 @@ resource "aws_subnet" "web-sub-2" {
   vpc_id               = "aws_vpc.my-vpc.id"
   cidr_block           = "11.0.2.0/24"
   availability         = "ap-south-1b"
-  associate_public_ip_address = true 
   tags = {
     Name = "web-1b"
   }
@@ -45,7 +42,6 @@ resource "aws_subnet" "application-subnet-1" {
   vpc_id                  = aws_vpc.my-vpc.id
   cidr_block              = "11.0.11.0/24"
   availability_zone       = "ap-south-1a"
-  associate_public_ip_address = false
 
   tags = {
     Name = "Application-1a"
@@ -56,7 +52,6 @@ resource "aws_subnet" "application-subnet-2" {
   vpc_id                  = aws_vpc.my-vpc.id
   cidr_block              = "11.0.12.0/24"
   availability_zone       = "ap-south-1b"
- associate_public_ip_address = false
 
   tags = {
     Name = "Application-2b"
@@ -137,6 +132,7 @@ resource "aws_instance" "webserver1" {
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-1.id
   user_data              = file("apache.sh")
+  map_public_ip_launch = true
 
   tags = {
     Name = "Web Server"
@@ -151,6 +147,7 @@ resource "aws_instance" "webserver2" {
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-2.id
   user_data              = file("apache.sh")
+  map_public_ip_launch = true
 
   tags = {
     Name = "Web Server"
