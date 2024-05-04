@@ -353,8 +353,10 @@ output "lb_dns_name" {
 
 resource "aws_s3_bucket" "my_bucket" {
   bucket = "batch4pmdevopswithaws2024771"
-
   acl = "private"
+}
+resource "aws_s3_bucket_versioning" "my_bucket_versioning" {
+  bucket = aws_s3_bucket.my_bucket.id
   versioning {
     enabled = true
   }
