@@ -133,7 +133,7 @@ resource "aws_instance" "webserver1" {
   key_name               = "ubuntu"
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-1.id
-  user_data              = file("apache.sh")
+  user_data              = "${file("apache.sh")}"
  
 
   tags = {
@@ -148,7 +148,7 @@ resource "aws_instance" "webserver2" {
   key_name               = "ubuntu"
   vpc_security_group_ids = [aws_security_group.webserver-sg.id]
   subnet_id              = aws_subnet.web-subnet-2.id
-  user_data              = file("apache.sh")
+  user_data              = "${file("apache.sh")}" 
  
 
   tags = {
