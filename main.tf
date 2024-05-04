@@ -359,7 +359,7 @@ resource "aws_s3_bucket" "my_bucket" {
 resource "aws_s3_bucket_versioning" "my_bucket_versioning" {
   bucket = aws_s3_bucket.my_bucket.id
   versioning_configuration {
-    enabled = true
+    status = "Enabled"
   }
 }
 
